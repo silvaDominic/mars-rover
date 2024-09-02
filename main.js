@@ -55,6 +55,18 @@ const ORIENTATION = {
   "W": 270,
 }
 
+const DIRECTION = {
+  "L": -90,
+  "R": 90,
+}
+
+const MOVE_MAP = {
+  0: [0, 1],
+  90: [1, 0],
+  180: [0, -1],
+  270: [-1, 0],
+}
+
 class Mission {
   orientation = 0;
   position = [null, null];
@@ -69,9 +81,30 @@ class Mission {
     this.boundaries.right = m.length - 1;
   }
 
-  startMission(x, y, orientation) {
-    this.orientation = ORIENTATION[orientation];
+  startMission(x, y, cardinalDirection) {
+    this.orientation = ORIENTATION[cardinalDirection];
     this.position = [x, y];
+  }
+
+  move(direction) {
+    // Update orientation
+    if (direction !== "F") {
+      this.orientation = this._calcOrientation(direction);
+      console.log(this.orientation);
+    // Move forward
+    } else {
+      this.position[0] += MOVE_MAP[this.orientation][0];
+      this.position[1] += MOVE_MAP[this.orientation][1];
+    }
+  }
+
+  _calcOrientation(direction) {
+    const newOrientation = this.orientation + DIRECTION[direction];
+
+    if (newOrientation === 360) return 0;
+    if (newOrientation < 0) return 270;
+
+    return newOrientation;
   }
 }
 
