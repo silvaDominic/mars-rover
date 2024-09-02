@@ -78,14 +78,17 @@ class Mission {
   orientation = 0;
   position = [null, null];
   boundaries = {
-    top: null,
+    top: 0,
     right: null,
-    bottom: 0,
+    bottom:  null,
     left: 0,
   }
+  isRoverLost = false;
+  lostPosition = [];
+  lostOrientation = 0;
   constructor(m, n) {
-    this.boundaries.top = n.length - 1;
-    this.boundaries.right = m.length - 1;
+    this.boundaries.right = m - 1;
+    this.boundaries.bottom = n - 1;
   }
 
   startMission(x, y, cardinalDirection) {
@@ -97,11 +100,13 @@ class Mission {
     // Update orientation
     if (direction !== "F") {
       this.orientation = this._calcOrientation(direction);
-      console.log(this.orientation);
     // Move forward
     } else {
-      this.position[0] += MOVE_MAP[this.orientation][0];
-      this.position[1] += MOVE_MAP[this.orientation][1];
+      const nextPosition = [...this.position];
+      nextPosition[0] += MOVE_MAP[this.orientation][0];
+      nextPosition[1] += MOVE_MAP[this.orientation][1];
+      this._checkIfLost(nextPosition);
+      this.position = nextPosition;
     }
   }
 
@@ -114,18 +119,33 @@ class Mission {
     return newOrientation;
   }
 
+  _checkIfLost(position) {
+    if (
+      (position[0] < this.boundaries.left || position[0] > this.boundaries.right ||
+      position[1] < this.boundaries.top || position[1] > this.boundaries.bottom) &&
+      this.isRoverLost === false
+    ) {
+      this.isRoverLost = true;
+      this.lostPosition = [...this.position];
+      this.lostOrientation = this.orientation;
+    }
+  }
+
   printLocation() {
-    console.log(`(${this.position},${CARDINAL_DIRECTION[this.orientation]})`)
+    if (!this.isRoverLost) {
+      console.log(`(${this.position},${CARDINAL_DIRECTION[this.orientation]})`)
+    } else {
+      console.log(`(${this.lostPosition},${CARDINAL_DIRECTION[this.lostOrientation]}) LOST`);
+    }
   }
 }
 
 marsLanding = new Mission(4, 8);
-marsLanding.startMission(2, 3, "E");
-marsLanding.move("L");
-marsLanding.move("F");
-marsLanding.move("R");
-marsLanding.move("F");
-marsLanding.move("F");
+marsLanding.startMission(1, 0, "S");
+//['L', 'F', 'R', 'F', 'F'].forEach(dir => marsLanding.move(dir)); //
+//['F', 'F', 'L', 'F', 'R', 'F', 'F'].forEach(dir => marsLanding.move(dir));
+//['F','L','L', 'F', 'R'].forEach(dir => marsLanding.move(dir));
+['F', 'F', 'R', 'L', 'F'].forEach(dir => marsLanding.move(dir));
 marsLanding.printLocation();
 
 
