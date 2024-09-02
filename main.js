@@ -124,7 +124,7 @@ class Rover {
       this.move(direction);
     });
 
-    this.printLocation();
+    this.endMission();
   }
 
   _land(startingPosition) {
@@ -175,6 +175,17 @@ class Rover {
     return false;
   }
 
+  endMission() {
+    this.printLocation();
+    this.orientation = 0;
+    this.position = [null, null];
+    this.boundaries = {};
+
+    this.isLost = false;
+    this.lostPosition = [];
+    this.lostOrientation = 0;
+  }
+
   printLocation() {
     if (!this.isLost) {
       console.log(`(${this.position},${CARDINAL_DIRECTION[this.orientation]})`)
@@ -185,6 +196,11 @@ class Rover {
 }
 
 const missionA = new Mission(4, 8, "LFRFF", {x: 2, y: 3, cardinalDirection: "E"});
-const missionB = new Mission(4, 8, "FFLFRFF", {x: 0, y: 2, cardinalDirection: "N"});
+const missionB = new Mission(4, 8, "FFLFRFF", {x: 0, y: 2, cardinalDirection: "N"}); // LOST
+const missionC = new Mission(4, 8, "FLLFR", {x: 2, y: 3, cardinalDirection: "N"});
+const missionD = new Mission(4, 8, "FFRLF", {x: 1, y: 0, cardinalDirection: "S"}); // LOST
 const marsRover = new Rover();
+marsRover.startMission(missionA);
 marsRover.startMission(missionB);
+marsRover.startMission(missionC);
+marsRover.startMission(missionD);
