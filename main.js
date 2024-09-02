@@ -75,25 +75,54 @@ const MOVE_MAP = {
 }
 
 class Mission {
-  orientation = 0;
-  position = [null, null];
   boundaries = {
-    top: 0,
+    top: null,
     right: null,
-    bottom:  null,
+    bottom:  0,
     left: 0,
   }
-  isRoverLost = false;
-  lostPosition = [];
-  lostOrientation = 0;
-  constructor(m, n) {
-    this.boundaries.right = m - 1;
-    this.boundaries.bottom = n - 1;
+  instructions = [];
+
+  constructor(m, n, instructions) {
+    this.boundaries.right = m ;
+    this.boundaries.top = n;
+
+    if (!Array.isArray(instructions)) {
+      this.instructions = instructions.split('');
+    } else {
+      this.instructions = instructions;
+    }
   }
 
-  startMission(x, y, cardinalDirection) {
+  get instructions() {
+    return this.instructions;
+  }
+}
+
+class Rover {
+  orientation = 0;
+  position = [null, null];
+  boundaries = {};
+
+  isLost = false;
+  lostPosition = [];
+  lostOrientation = 0;
+
+  constructor(x, y, cardinalDirection) {
     this.orientation = ORIENTATION[cardinalDirection];
     this.position = [x, y];
+  }
+
+  startMission(mission) {
+    this._establishBoundaries(mission.boundaries);
+
+    mission.instructions.forEach(direction => {
+      if (this.isLost) return;
+
+      this.move(direction);
+    });
+
+    this.printLocation();
   }
 
   move(direction) {
@@ -105,9 +134,15 @@ class Mission {
       const nextPosition = [...this.position];
       nextPosition[0] += MOVE_MAP[this.orientation][0];
       nextPosition[1] += MOVE_MAP[this.orientation][1];
-      this._checkIfLost(nextPosition);
+      if (this._checkIfLost(nextPosition)) {
+        return;
+      }
       this.position = nextPosition;
     }
+  }
+
+  _establishBoundaries(boundaries) {
+    this.boundaries = boundaries;
   }
 
   _calcOrientation(direction) {
@@ -122,30 +157,27 @@ class Mission {
   _checkIfLost(position) {
     if (
       (position[0] < this.boundaries.left || position[0] > this.boundaries.right ||
-      position[1] < this.boundaries.top || position[1] > this.boundaries.bottom) &&
-      this.isRoverLost === false
+        position[1] > this.boundaries.top || position[1] < this.boundaries.bottom) &&
+      this.isLost === false
     ) {
-      this.isRoverLost = true;
+      this.isLost = true;
       this.lostPosition = [...this.position];
       this.lostOrientation = this.orientation;
+      return true;
     }
+    return false;
   }
 
   printLocation() {
-    if (!this.isRoverLost) {
+    if (!this.isLost) {
       console.log(`(${this.position},${CARDINAL_DIRECTION[this.orientation]})`)
     } else {
-      console.log(`(${this.lostPosition},${CARDINAL_DIRECTION[this.lostOrientation]}) LOST`);
+      console.log(`(${this.position},${CARDINAL_DIRECTION[this.orientation]}) LOST`);
     }
   }
 }
 
-marsLanding = new Mission(4, 8);
-marsLanding.startMission(1, 0, "S");
-//['L', 'F', 'R', 'F', 'F'].forEach(dir => marsLanding.move(dir)); //
-//['F', 'F', 'L', 'F', 'R', 'F', 'F'].forEach(dir => marsLanding.move(dir));
-//['F','L','L', 'F', 'R'].forEach(dir => marsLanding.move(dir));
-['F', 'F', 'R', 'L', 'F'].forEach(dir => marsLanding.move(dir));
-marsLanding.printLocation();
-
-
+const missionA = new Mission(4, 8, "LFRFF");
+const missionB = new Mission(4, 8, "FFLFRFF");
+const marsRover = new Rover(0, 2, "N");
+marsRover.startMission(missionB);
