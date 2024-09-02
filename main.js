@@ -60,3 +60,16 @@ marsRover.startMission(missionA);
 marsRover.startMission(missionB);
 marsRover.startMission(missionC);
 marsRover.startMission(missionD);
+
+/*
+FINAL THOUGHTS
+
+I 'officially' finished this task at 1:03 AM EST. As I was putting together some tests I was motivated to refactor
+to make it easier and..got a little carried away. It's pretty nice and tidy now though.
+
+I didn't have time to write this for the console and honestly, I don't think I would if I did -- I feel like I
+accomplished the task.
+
+Otherwise, I think the exercise was good and I think the context made it kind of fun. I have a 'feeling' that some
+things can be improved (usage of maps, the way I detect a lost rover), but I will save that for the review.
+ */
