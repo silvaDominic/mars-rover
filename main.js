@@ -55,6 +55,13 @@ const ORIENTATION = {
   "W": 270,
 }
 
+const CARDINAL_DIRECTION = {
+  0: "N",
+  90: "E",
+  180: "S",
+  270: "W",
+}
+
 const DIRECTION = {
   "L": -90,
   "R": 90,
@@ -106,8 +113,19 @@ class Mission {
 
     return newOrientation;
   }
+
+  printLocation() {
+    console.log(`(${this.position},${CARDINAL_DIRECTION[this.orientation]})`)
+  }
 }
 
-
+marsLanding = new Mission(4, 8);
+marsLanding.startMission(2, 3, "E");
+marsLanding.move("L");
+marsLanding.move("F");
+marsLanding.move("R");
+marsLanding.move("F");
+marsLanding.move("F");
+marsLanding.printLocation();
 
 
