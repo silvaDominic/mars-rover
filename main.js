@@ -47,3 +47,34 @@ I think this is enough considering and exploring.
 It is subject to change.
 BEGIN CODING: 11:19PM
  */
+
+const ORIENTATION = {
+  "N": 0,
+  "E": 90,
+  "S": 180,
+  "W": 270,
+}
+
+class Mission {
+  orientation = 0;
+  position = [null, null];
+  boundaries = {
+    top: null,
+    right: null,
+    bottom: 0,
+    left: 0,
+  }
+  constructor(m, n) {
+    this.boundaries.top = n.length - 1;
+    this.boundaries.right = m.length - 1;
+  }
+
+  startMission(x, y, orientation) {
+    this.orientation = ORIENTATION[orientation];
+    this.position = [x, y];
+  }
+}
+
+
+
+
