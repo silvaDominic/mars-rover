@@ -82,10 +82,12 @@ class Mission {
     left: 0,
   }
   instructions = [];
+  startingPosition = {};
 
-  constructor(m, n, instructions) {
+  constructor(m, n, instructions, startingPosition) {
     this.boundaries.right = m ;
     this.boundaries.top = n;
+    this.startingPosition = startingPosition;
 
     if (!Array.isArray(instructions)) {
       this.instructions = instructions.split('');
@@ -96,6 +98,10 @@ class Mission {
 
   get instructions() {
     return this.instructions;
+  }
+
+  get startingPosition() {
+    return this.startingPosition;
   }
 }
 
@@ -108,12 +114,8 @@ class Rover {
   lostPosition = [];
   lostOrientation = 0;
 
-  constructor(x, y, cardinalDirection) {
-    this.orientation = ORIENTATION[cardinalDirection];
-    this.position = [x, y];
-  }
-
   startMission(mission) {
+    this._land(mission.startingPosition);
     this._establishBoundaries(mission.boundaries);
 
     mission.instructions.forEach(direction => {
@@ -123,6 +125,11 @@ class Rover {
     });
 
     this.printLocation();
+  }
+
+  _land(startingPosition) {
+    this.orientation = ORIENTATION[startingPosition.cardinalDirection];
+    this.position = [startingPosition.x, startingPosition.y];
   }
 
   move(direction) {
@@ -177,7 +184,7 @@ class Rover {
   }
 }
 
-const missionA = new Mission(4, 8, "LFRFF");
-const missionB = new Mission(4, 8, "FFLFRFF");
-const marsRover = new Rover(0, 2, "N");
+const missionA = new Mission(4, 8, "LFRFF", {x: 2, y: 3, cardinalDirection: "E"});
+const missionB = new Mission(4, 8, "FFLFRFF", {x: 0, y: 2, cardinalDirection: "N"});
+const marsRover = new Rover();
 marsRover.startMission(missionB);
