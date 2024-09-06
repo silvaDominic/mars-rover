@@ -37,18 +37,17 @@ export class Rover {
     mission.instructions.forEach(direction => {
       if (this.isLost) return;
 
-      this.move(direction);
+      if (direction === "F") {
+        this.move();
+      } else {
+        this.rotate(direction)
+      }
     });
 
     this.endMission();
   }
 
-  move(direction) {
-    // Update orientation
-    if (direction !== "F") {
-      this.orientation = this._calcOrientation(direction);
-      // Move forward
-    } else {
+  move() {
       const nextPosition = [...this.position];
       nextPosition[0] += MOVE_MAP[this.orientation][0];
       nextPosition[1] += MOVE_MAP[this.orientation][1];
@@ -56,7 +55,10 @@ export class Rover {
         return;
       }
       this.position = nextPosition;
-    }
+  }
+
+  rotate(direction) {
+    this.orientation = this._calcOrientation(direction);
   }
 
   endMission() {
