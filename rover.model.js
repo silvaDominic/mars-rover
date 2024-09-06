@@ -58,7 +58,7 @@ export class Rover {
   }
 
   rotate(direction) {
-    this.orientation = this._calcOrientation(direction);
+    this.orientation = this._calcOrientation(direction)
   }
 
   endMission() {
@@ -82,13 +82,15 @@ export class Rover {
     this.position = [startingPosition.x, startingPosition.y];
   }
 
+  /**
+   * Normalize angle by using the modulo of 360. Adding 360 accounts for when the value is negative but requires
+   * and additional modulo.
+   * @param direction
+   * @returns {number}
+   * @private
+   */
   _calcOrientation(direction) {
-    const newOrientation = this.orientation + DIRECTION[direction];
-
-    if (newOrientation === 360) return 0;
-    if (newOrientation < 0) return 270;
-
-    return newOrientation;
+    return ((this.orientation + DIRECTION[direction] % 360) + 360) % 360;
   }
 
   _isLost(position) {
