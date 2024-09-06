@@ -52,7 +52,7 @@ export class Rover {
       const nextPosition = [...this.position];
       nextPosition[0] += MOVE_MAP[this.orientation][0];
       nextPosition[1] += MOVE_MAP[this.orientation][1];
-      if (this._checkIfLost(nextPosition)) {
+      if (this._isLost(nextPosition)) {
         return;
       }
       this.position = nextPosition;
@@ -68,11 +68,7 @@ export class Rover {
   }
 
   printLocation() {
-    if (!this.isLost) {
-      console.log(`(${ this.position },${ CARDINAL_DIRECTION[this.orientation] })`)
-    } else {
-      console.log(`(${ this.position },${ CARDINAL_DIRECTION[this.orientation] }) LOST`);
-    }
+    console.log(`(${ this.position },${ CARDINAL_DIRECTION[this.orientation] }) ${this.isLost ? 'LOST' : ''}`);
   }
 
   _establishBoundaries(boundaries) {
@@ -93,7 +89,7 @@ export class Rover {
     return newOrientation;
   }
 
-  _checkIfLost(position) {
+  _isLost(position) {
     if (
       (position[0] < this.boundaries.left || position[0] > this.boundaries.right ||
         position[1] > this.boundaries.top || position[1] < this.boundaries.bottom) &&
