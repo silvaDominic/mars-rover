@@ -28,10 +28,7 @@ export class Rover {
   orientation = 0;
   position = [null, null];
   boundaries = {};
-
   isLost = false;
-  lostPosition = [];
-  lostOrientation = 0;
 
   startMission(mission) {
     this._land(mission.startingPosition);
@@ -67,10 +64,7 @@ export class Rover {
     this.orientation = 0;
     this.position = [null, null];
     this.boundaries = {};
-
     this.isLost = false;
-    this.lostPosition = [];
-    this.lostOrientation = 0;
   }
 
   printLocation() {
@@ -106,8 +100,6 @@ export class Rover {
       this.isLost === false
     ) {
       this.isLost = true;
-      this.lostPosition = [...this.position];
-      this.lostOrientation = this.orientation;
       return true;
     }
     return false;
